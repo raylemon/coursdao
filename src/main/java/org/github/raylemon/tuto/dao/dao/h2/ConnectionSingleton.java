@@ -1,4 +1,4 @@
-package org.github.raylemon.tuto.dao.h2;
+package org.github.raylemon.tuto.dao.dao.h2;
 
 import org.h2.jdbcx.JdbcDataSource;
 
