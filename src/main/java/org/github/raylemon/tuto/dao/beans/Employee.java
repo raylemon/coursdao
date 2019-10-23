@@ -71,6 +71,14 @@ public class Employee {
 
     @Override
     public String toString() {
-        return id + ":" + firstName + " " + lastName;
+        StringBuilder builder = new StringBuilder();
+        builder
+                .append(id).append(":")
+                .append(firstName).append(" ")
+                .append(lastName)
+                .append("\n++++++++++++++++++++Langages connus ++++++++++++++++++++\n");
+        languages.forEach(language -> builder.append(language).append("\n"));
+        return builder.toString();
+
     }
 }

@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation( group = "com.h2database", name = "h2", version = "1.4.200")
     implementation(group = "com.esotericsoftware", name = "minlog", version = "1.3.0")
+    implementation(group = "org.fluttercode.datafactory", name = "datafactory", version = "0.8")
 }
 
 configure<JavaPluginConvention> {

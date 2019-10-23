@@ -50,6 +50,10 @@ public class Society {
 
     @Override
     public String toString() {
-        return id + ":" + name;
+        StringBuilder builder = new StringBuilder()
+                .append(id).append(":").append(name)
+                .append("\n--------------------Employés--------------------\n");
+        employees.forEach(employee -> builder.append(employee).append("\n"));
+        return builder.toString();
     }
 }
