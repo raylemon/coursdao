@@ -2,11 +2,11 @@ package org.github.raylemon.tuto.dao.beans;
 
 import java.util.Objects;
 
-public class Languages {
+public class Language {
     private long id;
     private String name;
 
-    public Languages(String name) {
+    public Language(String name) {
         this.name = name;
     }
 
@@ -30,8 +30,8 @@ public class Languages {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Languages languages = (Languages) o;
-        return id == languages.id;
+        Language language = (Language) o;
+        return id == language.id;
     }
 
     @Override
