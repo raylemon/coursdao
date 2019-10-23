@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Society {
-    private long id;
+    private long id = -1;
     private String name;
     private List<Employee> employees = new ArrayList<>();
 
@@ -46,5 +46,10 @@ public class Society {
 
     public boolean containsEmployee(Employee employee) {
         return employees.contains(employee);
+    }
+
+    @Override
+    public String toString() {
+        return id + ":" + name;
     }
 }

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Employee {
-    private long id;
+    private long id = -1;
     private String firstName;
     private String lastName;
     private LocalDate birthday;
@@ -67,5 +67,10 @@ public class Employee {
 
     public boolean removeLanguage(Language language) {
         return languages.remove(language);
+    }
+
+    @Override
+    public String toString() {
+        return id + ":" + firstName + " " + lastName;
     }
 }
