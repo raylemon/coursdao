@@ -5,7 +5,8 @@ import org.h2.jdbcx.JdbcDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.esotericsoftware.minlog.Log.warn;
+import static com.esotericsoftware.minlog.Log.debug;
+import static com.esotericsoftware.minlog.Log.error;
 
 public class ConnectionSingleton {
     private static Connection connection;
@@ -20,8 +21,9 @@ public class ConnectionSingleton {
         try {
             connection = dataSource.getConnection();
         } catch (SQLException e) {
-            warn("No connection", e);
+            error("No connection", e);
         }
+        debug("Connecting to db");
         return connection;
     }
 }
