@@ -1,5 +1,6 @@
 package org.github.raylemon.tuto.dao.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DAO<T> {
@@ -13,5 +14,5 @@ public interface DAO<T> {
 
     List<T> findAll();
 
-    void saveAll();
+    void saveAll(Collection<T> collection);
 }
