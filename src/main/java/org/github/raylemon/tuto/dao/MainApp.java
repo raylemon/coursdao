@@ -17,6 +17,7 @@ public class MainApp {
 
         System.out.println("*******************Ajouter une société************************");
         Society society = new Society(factory.getBusinessName());
+        System.out.println(society);
 
         System.out.println("*******************Ajouter un employé************************");
         Employee employee = new Employee();

@@ -39,6 +39,8 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
     private void putLanguage(Language language, long id) {
         String sql = "insert into J_EMP_LANG (FK_EMPLOYEE, FK_LANGUAGE) VALUES ( ?,? )";
         try (PreparedStatement statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+            if (language.getId() == -1)
+                language = new H2LanguageDAO().save(language);
             statement.setLong(1, language.getId());
             statement.setLong(2, id);
             info(LOG_CAT, "sql> " + statement);
@@ -46,7 +48,7 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
             statement.execute();
 
         } catch (SQLException e) {
-            error(LOG_CAT, "sql error when saving " + language + "into junction table", e);
+            error(LOG_CAT, "sql error when saving " + language + " into junction table", e);
         }
         info(LOG_CAT, language + " attached to emp id " + id);
     }
@@ -149,6 +151,7 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
         } catch (SQLException e) {
             error(LOG_CAT, "sql error when retrieving Employees", e);
         }
+        info(LOG_CAT, "finding " + employees.size() + " employees");
         return employees;
     }
 

@@ -1,7 +1,5 @@
 package org.github.raylemon.tuto.dao.beans;
 
-import java.util.Objects;
-
 public class Language {
     private long id = -1;
     private String name;
@@ -35,13 +33,18 @@ public class Language {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Language language = (Language) o;
-        return id == language.id;
+
+        if (id != language.id) return false;
+        return name.equals(language.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     @Override

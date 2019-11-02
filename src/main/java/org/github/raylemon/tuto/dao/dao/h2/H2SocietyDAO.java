@@ -1,5 +1,6 @@
 package org.github.raylemon.tuto.dao.dao.h2;
 
+import org.github.raylemon.tuto.dao.beans.Employee;
 import org.github.raylemon.tuto.dao.beans.Society;
 
 import java.sql.PreparedStatement;
@@ -47,7 +48,8 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
             if (rs.first()) {
                 society.setId(id);
                 society.setName(rs.getString("NAME"));
-                society.setEmployees(new H2EmployeeDAO().findAll().parallelStream().filter(employee -> employee.getSociety().getId() == id).collect(Collectors.toList()));
+                List<Employee> employees = new ArrayList<>(new H2EmployeeDAO().findAll());
+                society.setEmployees(employees.parallelStream().filter(employee -> employee.getSociety().getId() == id).collect(Collectors.toList()));
 
                 info(LOG_CAT, "finding Society " + society);
             }
@@ -90,15 +92,13 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
 
     @Override
     public Collection<Society> findAll() {
-        String sql = "select * from SOCIETIES";
+        String sql = "select SOC_ID from SOCIETIES";
         List<Society> societies = new ArrayList<>();
         try (Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
             info(LOG_CAT, "sql> " + sql);
             ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
-                Society society = new Society(rs.getString("NAME"));
-                society.setId(rs.getLong("SOC_ID"));
-                societies.add(society);
+                societies.add(find(rs.getLong(1)));
             }
         } catch (SQLException e) {
             error(LOG_CAT, "sql error when retrieving Societies collection", e);
