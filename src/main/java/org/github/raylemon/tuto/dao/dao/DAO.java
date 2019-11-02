@@ -1,8 +1,5 @@
 package org.github.raylemon.tuto.dao.dao;
 
-import java.util.Collection;
-import java.util.List;
-
 public interface DAO<T> {
     T save(T object);      //CREATE
 
@@ -12,7 +9,7 @@ public interface DAO<T> {
 
     void delete(T object); //DELETE
 
-    List<T> findAll();
+    //List<T> findAll();
 
-    void saveAll(Collection<T> collection);
+    //void saveAll(Collection<T> collection);
 }

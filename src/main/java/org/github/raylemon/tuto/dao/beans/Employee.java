@@ -11,6 +11,7 @@ public class Employee {
     private String firstName;
     private String lastName;
     private LocalDate birthday;
+    private Society society;
     private Set<Language> languages = new HashSet<>();
 
     public long getId() {
@@ -47,6 +48,14 @@ public class Employee {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public Society getSociety() {
+        return society;
+    }
+
+    public void setSociety(Society society) {
+        this.society = society;
     }
 
     public Set<Language> getLanguages() {

@@ -6,9 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static com.esotericsoftware.minlog.Log.*;
 
@@ -84,7 +81,7 @@ public class H2LanguageDAO extends H2Dao<Language> {
         info(LOG_CAT, "Successfully removed " + object);
     }
 
-    @Override
+    /*@Override
     public List<Language> findAll() {
         String sql = "select * from LANGUAGES";
         List<Language> languages = new ArrayList<>();
@@ -126,5 +123,5 @@ public class H2LanguageDAO extends H2Dao<Language> {
         } catch (SQLException e) {
             error(LOG_CAT, "SQL error when saving all objects", e);
         }
-    }
+    }*/
 }
