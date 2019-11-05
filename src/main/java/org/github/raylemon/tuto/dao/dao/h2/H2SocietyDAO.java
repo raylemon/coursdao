@@ -8,14 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.esotericsoftware.minlog.Log.*;
 
 
-public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Society> {
+public class H2SocietyDAO extends H2Dao<Society> {
     @Override
     public Society save(Society object) {
         String sql = "insert into SOCIETIES (NAME) values ( ? )";
@@ -28,6 +27,7 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
             if (rs.first()) object.setId(rs.getLong(1));
             debug(LOG_CAT, object + " has now id " + object.getId());
 
+            object.getEmployees().forEach(employee -> employee.setSociety(object));
             object.getEmployees().forEach(new H2EmployeeDAO()::save);
 
         } catch (SQLException e) {
@@ -48,7 +48,7 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
             if (rs.first()) {
                 society.setId(id);
                 society.setName(rs.getString("NAME"));
-                List<Employee> employees = new ArrayList<>(new H2EmployeeDAO().findAll());
+                List<Employee> employees = new ArrayList<>(new H2EmployeeDAO().findAllIn(society));
                 society.setEmployees(employees.parallelStream().filter(employee -> employee.getSociety().getId() == id).collect(Collectors.toList()));
 
                 info(LOG_CAT, "finding Society " + society);
@@ -90,8 +90,7 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
         info(LOG_CAT, "Successfully removed Society " + object);
     }
 
-    @Override
-    public Collection<Society> findAll() {
+    public List<Society> findAll() {
         String sql = "select SOC_ID from SOCIETIES";
         List<Society> societies = new ArrayList<>();
         try (Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -107,8 +106,7 @@ public class H2SocietyDAO extends H2Dao<Society> implements CollectionDAO<Societ
         return societies;
     }
 
-    @Override
-    public void saveAll(Collection<Society> collection) {
-        collection.forEach(this::save);
+    public void saveAll(List<Society> societies) {
+        societies.forEach(this::save);
     }
 }

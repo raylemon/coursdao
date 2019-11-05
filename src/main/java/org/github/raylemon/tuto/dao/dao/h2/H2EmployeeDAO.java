@@ -2,15 +2,18 @@ package org.github.raylemon.tuto.dao.dao.h2;
 
 import org.github.raylemon.tuto.dao.beans.Employee;
 import org.github.raylemon.tuto.dao.beans.Language;
+import org.github.raylemon.tuto.dao.beans.Society;
 
-import java.sql.Date;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.esotericsoftware.minlog.Log.*;
 
 
-public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Employee> {
+public class H2EmployeeDAO extends H2Dao<Employee> {
 
     @Override
     public Employee save(Employee object) {
@@ -41,8 +44,8 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
         try (PreparedStatement statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
             if (language.getId() == -1)
                 language = new H2LanguageDAO().save(language);
-            statement.setLong(1, language.getId());
-            statement.setLong(2, id);
+            statement.setLong(2, language.getId());
+            statement.setLong(1, id);
             info(LOG_CAT, "sql> " + statement);
 
             statement.execute();
@@ -68,6 +71,7 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
                 employee.setLastName(rs.getString("LASTNAME"));
                 employee.setBirthday(rs.getDate("BIRTHDAY").toLocalDate());
                 employee.setLanguages(getLanguages(id));
+                employee.setSociety(new H2SocietyDAO().find(rs.getLong("FK_SOCIETY")));
             }
         } catch (SQLException e) {
             error(LOG_CAT, "sql error when finding Employee id " + id, e);
@@ -135,28 +139,27 @@ public class H2EmployeeDAO extends H2Dao<Employee> implements CollectionDAO<Empl
         info(LOG_CAT, "Successfully removed " + object);
     }
 
-
-    @Override
-    public Collection<Employee> findAll() {
-        String sql = "select EMP_ID from EMPLOYEES";
+    List<Employee> findAllIn(Society society) {
+        String sql = "select * from EMPLOYEES where FK_SOCIETY = ?";
         List<Employee> employees = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            info(LOG_CAT, "sql> " + sql);
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, society.getId());
+            info(LOG_CAT, "sql> " + statement);
 
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                employees.add(find(rs.getLong(1)));
+                Employee employee = new Employee();
+                employee.setId(rs.getLong("EMP_ID"));
+                employee.setFirstName(rs.getString("FIRSTNAME"));
+                employee.setLastName(rs.getString("LASTNAME"));
+                employee.setBirthday(rs.getDate("BIRTHDAY").toLocalDate());
+                employee.setSociety(society);
+                employee.setLanguages(getLanguages(employee.getId()));
+                employees.add(employee);
             }
-
         } catch (SQLException e) {
-            error(LOG_CAT, "sql error when retrieving Employees", e);
+            error(LOG_CAT, "sql error when retrieving Employee for " + society, e);
         }
-        info(LOG_CAT, "finding " + employees.size() + " employees");
         return employees;
-    }
-
-    @Override
-    public void saveAll(Collection<Employee> collection) {
-        collection.forEach(this::save);
     }
 }
